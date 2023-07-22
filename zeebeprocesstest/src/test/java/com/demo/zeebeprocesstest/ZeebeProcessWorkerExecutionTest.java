@@ -45,7 +45,7 @@ public class ZeebeProcessWorkerExecutionTest {
     @Test
     public void testWorker() {
         initDeployment();
-        ProcessInstanceAssert instanceAssert = initProcessInstanceStart();
+        ProcessInstanceAssert processInstanceAssert = initProcessInstanceStart();
 
         //The below lines fetches one job of task type "zeebe_test_task"
         ActivateJobsResponse response = client.newActivateJobsCommand()
@@ -65,6 +65,6 @@ public class ZeebeProcessWorkerExecutionTest {
 
         //then
         //This is to check if the process is completed.
-        instanceAssert.isCompleted();
+        processInstanceAssert.isCompleted();
     }
 }
