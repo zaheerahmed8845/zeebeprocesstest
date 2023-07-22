@@ -6,6 +6,7 @@ import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.response.ProcessInstanceEvent;
 import io.camunda.zeebe.process.test.api.ZeebeTestEngine;
 import io.camunda.zeebe.process.test.assertions.BpmnAssert;
+import io.camunda.zeebe.process.test.assertions.JobAssert;
 import io.camunda.zeebe.process.test.assertions.ProcessInstanceAssert;
 import io.camunda.zeebe.process.test.extension.testcontainer.ZeebeProcessTest;
 import io.camunda.zeebe.process.test.filters.RecordStream;
@@ -54,12 +55,13 @@ public class ZeebeProcessWorkerExecutionTest {
                 .join();
 
         ActivatedJob activatedJob = response.getJobs().get(0);
-
-        BpmnAssert.assertThat(activatedJob);
+        JobAssert jobAssert = BpmnAssert.assertThat(activatedJob);
 
         ZeebeProcessTestWorker zeebeProcessTestWorker = new ZeebeProcessTestWorker();
         //Explicitly calling the worker, to test the actual worker.
         zeebeProcessTestWorker.handleWorker(client, activatedJob);
+        //This checks that there are no incidents received after the worker is executed.
+        jobAssert.hasNoIncidents();
 
         //then
         //This is to check if the process is completed.
